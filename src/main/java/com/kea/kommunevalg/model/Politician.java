@@ -10,12 +10,21 @@ public class Politician {
 
     @Id
     @Column(name = "name", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id", nullable = false)
     Party party;
+
+    public Politician(String name, Party party) {
+        this.name = name;
+        this.party = party;
+    }
+
+    public Politician() {
+    }
 
     public String getName() {
         return name;
@@ -31,5 +40,10 @@ public class Politician {
 
     public void setParty(Party party) {
         this.party = party;
+    }
+
+    @Override
+    public String toString() {
+        return "navn: " + name + " parti: " + party;
     }
 }

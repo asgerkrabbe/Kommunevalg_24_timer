@@ -5,6 +5,103 @@
     <title>Title</title>
 </head>
 <body>
-
+<table class="members" id="matches">
+    <div>
+        <thead>
+        <tr>
+            <td>Id</td>
+            <td>Partinavn</td>
+            <td>Stemmer</td>
+            <td>Politikere</td>
+        </tr>
+        </thead>
+        <tbody id="party-table">
+        </tbody>
+        <tbody id="party-politician"></tbody>
+    </div>
+</table>
+<br><br><br>
+<table>
+    <div>
+        <thead>
+        <tr>
+            <td>Navn</td>
+            <td>Parti</td>
+        </tr>
+        </thead>
+        <tbody id="politician-table">
+        </tbody>
+    </div>
+</table>
 </body>
 </html>
+
+<script>
+
+    function localCache() {
+        let politicians = []
+        let parties = []
+
+        return {
+            populatePoliticians: (all) => politicians = all,
+            populateParties: (all) => parties = all,
+            getPoliticians: () => politicians,
+            getParties: () => parties
+        }
+    }
+
+    const URL = "http://localhost:8080"
+    const cache = localCache()
+    fetchParties()
+    fetchPoliticians()
+
+    function fetchParties() {
+        fetch(URL + "/parties")
+            .then(response => response.json())
+            .then(data => {
+                    cache.populateParties(data)
+                    buildPartyRows()
+                    console.log(data)
+                }
+            )
+    }
+
+    function fetchPoliticians() {
+        fetch(URL + "/politicians")
+            .then(response => response.json())
+            .then(data => {
+                cache.populatePoliticians(data)
+                buildPoliticianRows()
+                console.log(data)
+            })
+    }
+
+    function buildPoliticianRows() {
+        const politicians = cache.getPoliticians()
+        const rows = politicians.map(politicians => {
+            return `<tr id="politician">
+            <td>${politicians.name}</td>
+            <td>${politicians.parties}</td>
+        </tr>`;
+        })
+        document.getElementById("politician-table").innerHTML = rows.join("")
+    }
+
+    function buildPartyRows() {
+        const parties = cache.getParties()
+        const rows = parties.map(parties => {
+            return `<tr id="parties">
+            <td>${parties.id}</td>
+            <td>${parties.name}</td>
+            <td>${parties.votes}</td>
+            <td>${parties.politicians[0].name}</td>
+        </tr>`;
+        })
+        document.getElementById("party-table").innerHTML = rows.join("")
+    }
+
+
+
+
+
+</script>

@@ -8,19 +8,19 @@ import java.util.Set;
 public class Party {
 
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, updatable = false, insertable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false)
-    private String partyName;
+    private String name;
 
     @Column(name = "votes", columnDefinition = "0")
     private long votes;
 
-    @Column(name = "politician", nullable = false)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "party")
-    Set<Politician> politicians;
+
+    private Set<Politician> politicians;
 
 
     public Long getId() {
@@ -31,12 +31,12 @@ public class Party {
         this.id = id;
     }
 
-    public String getPartyName() {
-        return partyName;
+    public String getName() {
+        return name;
     }
 
-    public void setPartyName(String partyName) {
-        this.partyName = partyName;
+    public void setName(String partyName) {
+        this.name = partyName;
     }
 
     public long getVotes() {
@@ -54,4 +54,6 @@ public class Party {
     public void setPoliticians(Set<Politician> politicians) {
         this.politicians = politicians;
     }
+
+
 }
