@@ -9,13 +9,15 @@ import javax.persistence.*;
 public class Politician {
 
     @Id
-    @Column(name = "name", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "politician_id")
+    private Long id;
+
+    @Column(name = "name")
     private String name;
 
-    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "party_id"/*, insertable = false, updatable = false*/)
     Party party;
 
     public Politician(String name, Party party) {
@@ -24,6 +26,14 @@ public class Politician {
     }
 
     public Politician() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

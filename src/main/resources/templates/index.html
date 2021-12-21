@@ -5,8 +5,14 @@
     <title>Title</title>
 </head>
 <body>
-<table class="members" id="matches">
-    <div>
+
+<div id="new-politician">
+    <input type="text" id="new-name" placeholder="Skriv navn">
+    <input type="text" id="new-party" placeholder="Skriv parti id">
+    <button id="btn-create-politician">hey</button>
+</div>
+
+<table hidden>
         <thead>
         <tr>
             <td>Id</td>
@@ -18,11 +24,11 @@
         <tbody id="party-table">
         </tbody>
         <tbody id="party-politician"></tbody>
-    </div>
 </table>
+
 <br><br><br>
-<table>
-    <div>
+
+<table >
         <thead>
         <tr>
             <td>Navn</td>
@@ -31,13 +37,17 @@
         </thead>
         <tbody id="politician-table">
         </tbody>
-    </div>
 </table>
+
+<div>
+
+</div>
+
+
 </body>
 </html>
 
 <script>
-
     function localCache() {
         let politicians = []
         let parties = []
@@ -49,6 +59,11 @@
             getParties: () => parties
         }
     }
+
+    function setUpHandlers() {
+        document.getElementById("btn-create-politician").onclick = savePolitician;
+    }
+    setUpHandlers()
 
     const URL = "http://localhost:8080"
     const cache = localCache()
@@ -81,7 +96,7 @@
         const rows = politicians.map(politicians => {
             return `<tr id="politician">
             <td>${politicians.name}</td>
-            <td>${politicians.parties}</td>
+            <td>${politicians.party.name}</td>
         </tr>`;
         })
         document.getElementById("politician-table").innerHTML = rows.join("")
@@ -94,14 +109,38 @@
             <td>${parties.id}</td>
             <td>${parties.name}</td>
             <td>${parties.votes}</td>
-            <td>${parties.politicians[0].name}</td>
         </tr>`;
         })
         document.getElementById("party-table").innerHTML = rows.join("")
     }
 
+    function deletePolitician() {
 
+    }
 
+    function savePolitician() {
+        let politician = {
+            name: document.getElementById("new-name").value,
+            party: {
+                id: document.getElementById("new-party").value
+            }
+        }
 
+        const options = {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(politician)
+        }
+        console.log(politician)
+
+        fetch(URL + "/new-politician", options)
+            .then(response => response.json())
+            .then(() => {
+                fetchPoliticians()
+            })
+    }
 
 </script>

@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 @RestController
 @CrossOrigin(origins = "*")
-
 public class MunicipalityController {
 
     PartyRepository partyRep;
@@ -46,40 +46,45 @@ public class MunicipalityController {
         return ResponseEntity.status(HttpStatus.OK).body(politicians);
     }
 
-    @GetMapping("/politician/{name}")
-    public ResponseEntity<Optional<Politician>> findPoliticianById(@PathVariable String name) {
-        Optional<Politician> politician = politicianRep.findById(name);
+    @GetMapping("/politician/{id}")
+    public ResponseEntity<Optional<Politician>> findPoliticianById(@PathVariable Long id) {
+        Optional<Politician> politician = politicianRep.findById(id);
         System.out.println(politician.get().getParty().getPoliticians());
         return ResponseEntity.status(HttpStatus.OK).body(politician);
     }
 
     @GetMapping("/politician-party/{id}")
     public ResponseEntity<List<Politician>> findPoliticiansByPartyId(@PathVariable Long id) {
+        List<Politician> politiciansByPartyId = new ArrayList<>();
         List<Politician> politicians = new ArrayList<>();
         politicianRep.findAll().forEach(politicians::add);
 
         for (int i = 0; i < politicians.size(); i++) {
-            if (id != politicians.get(i).getParty().getId()) {
-                politicians.remove(i);
+            if (id == politicians.get(i).getParty().getId()) {
+                politiciansByPartyId.add(politicians.get(i));
             }
         }
-        System.out.println(politicians.size());
-        //return ResponseEntity.status(HttpStatus.OK).(politicians);
-        return null;
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(politiciansByPartyId);
     }
 
-    @PostMapping()
+
+    @PostMapping(value = "/new-politician", consumes = "application/json")
     public ResponseEntity<Politician> savePolitician(@RequestBody Politician politician) {
 
         return ResponseEntity.ok(politicianRep.save(politician));
     }
 
-    @PutMapping("/{name}")
-    public ResponseEntity<String> updatePolitician(@PathVariable String name, @RequestBody Politician politician) {
+    @PutMapping("/politician/{id}")
+    public ResponseEntity<Politician> updatePolitician(@PathVariable Long id, @RequestBody Politician politician) {
 
-        Optional<Politician> optionalPolitician = politicianRep.findById(name);
+        Optional<Politician> optionalPolitician = politicianRep.findById(id);
+
+        return ResponseEntity.ok(politicianRep.save(politician));
+        /*
         if (optionalPolitician.isPresent()) {
-            if (name.equals(politician.getName())) {
+            if (id.equals(politician.getId())) {
                 politicianRep.save(politician);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             } else {
@@ -88,13 +93,13 @@ public class MunicipalityController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-    }
+    */}
 
     //Works with name
-    @DeleteMapping("/delete/{name}")
-    public ResponseEntity<String> deletePolitician(@PathVariable String name) {
-        Optional<Politician> politicianToDelete = politicianRep.findById(name);
-        politicianRep.deleteById(name);
+    @DeleteMapping("/politician/{id}")
+    public ResponseEntity<String> deletePolitician(@PathVariable Long id) {
+        Optional<Politician> politicianToDelete = politicianRep.findById(id);
+        politicianRep.deleteById(id);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }

@@ -1,5 +1,7 @@
 package com.kea.kommunevalg.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -8,20 +10,30 @@ import java.util.Set;
 public class Party {
 
     @Id
-    @Column(name = "id", nullable = false, updatable = false, insertable = false)
+    @Column(name = "party_id", updatable = false, insertable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
     @Column(name = "votes", columnDefinition = "0")
     private long votes;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "party")
-
+    @JsonIgnore
+    @OneToMany()
+    @JoinColumn(name = "party_id")
     private Set<Politician> politicians;
 
+    public Party(Long id, String name, long votes, Set<Politician> politicians) {
+        this.id = id;
+        this.name = name;
+        this.votes = votes;
+        this.politicians = politicians;
+    }
+
+    public Party() {
+    }
 
     public Long getId() {
         return id;

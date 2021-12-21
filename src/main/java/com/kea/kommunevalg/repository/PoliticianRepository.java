@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface PoliticianRepository extends CrudRepository<Politician, String> {
+public interface PoliticianRepository extends CrudRepository<Politician, Long> {
 
 }
