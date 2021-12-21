@@ -64,8 +64,6 @@ public class MunicipalityController {
                 politiciansByPartyId.add(politicians.get(i));
             }
         }
-
-
         return ResponseEntity.status(HttpStatus.OK).body(politiciansByPartyId);
     }
 
@@ -73,34 +71,21 @@ public class MunicipalityController {
     @PostMapping(value = "/new-politician", consumes = "application/json")
     public ResponseEntity<Politician> savePolitician(@RequestBody Politician politician) {
 
-        return ResponseEntity.ok(politicianRep.save(politician));
+        return ResponseEntity.status(HttpStatus.OK).body(politicianRep.save(politician));
     }
 
     @PutMapping("/politician/{id}")
     public ResponseEntity<Politician> updatePolitician(@PathVariable Long id, @RequestBody Politician politician) {
-
         Optional<Politician> optionalPolitician = politicianRep.findById(id);
-
         return ResponseEntity.ok(politicianRep.save(politician));
-        /*
-        if (optionalPolitician.isPresent()) {
-            if (id.equals(politician.getId())) {
-                politicianRep.save(politician);
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-    */}
 
-    //Works with name
+
     @DeleteMapping("/politician/{id}")
     public ResponseEntity<String> deletePolitician(@PathVariable Long id) {
-        Optional<Politician> politicianToDelete = politicianRep.findById(id);
         politicianRep.deleteById(id);
-
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+
 }

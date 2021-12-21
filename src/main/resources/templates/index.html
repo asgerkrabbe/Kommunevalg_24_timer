@@ -2,35 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Samsø Kommunalvalg</title>
 </head>
 <body>
+<h1 id="title">Velkommen til Samsøs komunalvalgoversigt!</h1>
+<style>
+    #party {
+        margin-left: 25%;
 
+
+    }
+    #politician {
+        margin-left: 25%;
+    }
+    #input-section {
+        text-align: center;
+    }
+#title {
+    text-align: center;
+}
+    #td {
+        font-weight: bold;
+    }
+    #tr {
+        font-weight: bold;
+    }
+</style>
+<section id="input-section">
+<b>Opret en ny politiker</b>
 <div id="new-politician">
     <input type="text" id="new-name" placeholder="Skriv navn">
     <input type="text" id="new-party" placeholder="Skriv parti id">
-    <button id="btn-create-politician">hey</button>
+    <button id="btn-create-politician">create</button>
 </div>
+<b>Slet en politiker</b>
+<div id="delete-politician">
+    <input type="text" id="delete-id" placeholder="Skriv politiker id">
+    <button id="btn-delete-politician">delete</button>
+</div>
+<b>Rediger en politiker</b>
+<div id="update-politician">
+    <input type="text" id="update-politician-id" placeholder="Skriv politiker id">
+    <input type="text" id="update-politician-name" placeholder="Skriv politiker nye navn">
+    <input type="text" id="update-politician-party-id" placeholder="Skriv politikers nye parti id">
+    <button id="btn-update-politician">update</button>
 
-<table hidden>
+</div>
+</section>
+<div id="party">
+<table>
         <thead>
-        <tr>
+        <tr id="td">
             <td>Id</td>
             <td>Partinavn</td>
             <td>Stemmer</td>
-            <td>Politikere</td>
         </tr>
         </thead>
         <tbody id="party-table">
         </tbody>
         <tbody id="party-politician"></tbody>
 </table>
+</div>
 
-<br><br><br>
 
-<table >
+<div id="politician">
+<table>
         <thead>
-        <tr>
+        <tr id="tr">
+            <td>Id</td>
             <td>Navn</td>
             <td>Parti</td>
         </tr>
@@ -38,12 +77,7 @@
         <tbody id="politician-table">
         </tbody>
 </table>
-
-<div>
-
 </div>
-
-
 </body>
 </html>
 
@@ -62,6 +96,8 @@
 
     function setUpHandlers() {
         document.getElementById("btn-create-politician").onclick = savePolitician;
+        document.getElementById("btn-delete-politician").onclick = deletePolitician;
+        document.getElementById("btn-update-politician").onclick = updatePolitician;
     }
     setUpHandlers()
 
@@ -95,6 +131,7 @@
         const politicians = cache.getPoliticians()
         const rows = politicians.map(politicians => {
             return `<tr id="politician">
+            <td>${politicians.id}</td>
             <td>${politicians.name}</td>
             <td>${politicians.party.name}</td>
         </tr>`;
@@ -114,8 +151,26 @@
         document.getElementById("party-table").innerHTML = rows.join("")
     }
 
+    /**
+     * Does not update list after delete
+     */
     function deletePolitician() {
+        let politicianId = document.getElementById("delete-id").value
 
+        const options = {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(politicianId)
+        }
+
+        fetch(URL + "/politician/" + politicianId, options)
+            .then(response => response.json())
+            .then(() => {
+                fetchPoliticians()
+            })
     }
 
     function savePolitician() {
@@ -134,9 +189,34 @@
             },
             body: JSON.stringify(politician)
         }
-        console.log(politician)
 
         fetch(URL + "/new-politician", options)
+            .then(response => response.json())
+            .then(() => {
+                fetchPoliticians()
+            })
+    }
+
+    function updatePolitician() {
+        let politicianId = document.getElementById("update-politician-id").value
+        let politician = {
+            id: document.getElementById("update-politician-id").value,
+            name: document.getElementById("update-politician-name").value,
+            party: {
+                id: document.getElementById("update-politician-party-id").value
+            }
+        }
+
+        const options = {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(politician)
+        }
+
+        fetch(URL + "/politician/" + politicianId, options)
             .then(response => response.json())
             .then(() => {
                 fetchPoliticians()

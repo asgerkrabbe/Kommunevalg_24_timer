@@ -1,0 +1,33 @@
+drop table if exists parties;
+
+CREATE TABLE `parties` (
+  `party_id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `votes` int DEFAULT '0',
+  PRIMARY KEY (`party_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+drop table if exists politicians;
+
+CREATE TABLE `politicians` (
+  `politician_id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `party_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`politician_id`),
+  KEY `FKs6b71ef70erpxeke2k2h7a4rx` (`party_id`),
+  CONSTRAINT `FKs6b71ef70erpxeke2k2h7a4rx` FOREIGN KEY (`party_id`) REFERENCES `parties` (`party_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+INSERT INTO `kommunevalg`.`parties`
+(`party_id`,
+`name`,
+`votes`)
+VALUES
+(24,"Socialdemokratiet",0),
+(25,"Det konservative Folkeparti",0),
+(26,"SF - Socialistisk Folkeparti",0),
+(27,"Dansk Folkeparti",0),
+(28,"Venstre, Danmarks Liberale Parti",0),
+(29,"Enhedslisten - De Rød-Grønne",0);
+

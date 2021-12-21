@@ -10,7 +10,7 @@ import java.util.Set;
 public class Party {
 
     @Id
-    @Column(name = "party_id", updatable = false, insertable = false)
+    @Column(name = "party_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

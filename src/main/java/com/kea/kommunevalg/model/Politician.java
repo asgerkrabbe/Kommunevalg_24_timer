@@ -17,7 +17,7 @@ public class Politician {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "party_id"/*, insertable = false, updatable = false*/)
+    @JoinColumn(name = "party_id", insertable = false, updatable = false)
     Party party;
 
     public Politician(String name, Party party) {
